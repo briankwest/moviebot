@@ -140,7 +140,6 @@ def get_upcoming_movies(language="en-US", region=None):
     params = {"language": language, "region": region}
     response = call_tmdb_api(endpoint, params)
     if 'results' in response:
-        print("fucker\n")
         return format_upcoming_movies_results(response['results']), {}
     return response
 
