@@ -1,135 +1,191 @@
-# MovieBot SignalWire AI Agent
+# MovieBot Setup Guide
 
-## Overview
+This guide covers the setup and configuration of the MovieBot AI agent.
 
-The MovieBot SignalWire AI Agent is a sophisticated assistant designed to provide detailed information about movies, directors, actors, genres, and personalized recommendations. It leverages the SignalWire AI Gateway (SWAIG) for real-time communication, OpenAI's GPT models for natural language processing, and The Movie Database (TMDb) API for up-to-date movie data.
+## Requirements
 
-## Features
+- Python 3.8 or higher
+- TMDb API key
+- SignalWire account (for production deployment)
 
-- **Movie Search**: Find movies by title using the `search_movie` function.
-- **Detailed Movie Information**: Retrieve comprehensive details about a movie with `get_movie_details`.
-- **Movie Discovery**: Discover movies based on genres, release year, and popularity using `discover_movies`.
-- **Trending Movies**: Get a list of currently trending movies with `get_trending_movies`.
-- **Recommendations**: Receive movie recommendations based on a specific movie using `get_movie_recommendations`.
-- **Cast and Crew Information**: Access detailed cast and crew information with `get_movie_credits`.
-- **Person Details**: Fetch detailed information about actors and directors using `get_person_details`.
-- **Genre List**: Retrieve a list of official movie genres with `get_genre_list`.
-- **Upcoming Movies**: Get information on movies soon to be released using `get_upcoming_movies`.
-- **Now Playing**: Find movies currently playing in theaters with `get_now_playing_movies`.
-- **Similar Movies**: Discover movies similar to a specified movie using `get_similar_movies`.
-- **Multi-Search**: Perform a broad search across movies, TV shows, and people with `multi_search`.
+## Quick Start
 
-## Architecture
+### 1. Install Dependencies
 
-The AI agent is built on the following components:
+```bash
+pip install -r requirements.txt
+```
 
-- **SignalWire AI Gateway (SWAIG)**: Facilitates real-time communication and integrates AI functionalities.
-- **OpenAI GPT Models**: Provides natural language understanding and generation capabilities via the SignalWire AI Agent framework. You can visit [SignalWire AI](https://signalwire.ai) to learn more.
-- **TMDb API**: Supplies real-time movie data, ensuring the AI provides accurate and current information.
+This installs:
+- `signalwire-agents` - SignalWire AI Agents SDK
+- `requests` - HTTP client for TMDb API
+- `python-dotenv` - Environment variable management
+- `Flask` - Web framework (for static file serving)
 
-## Getting Started
+### 2. Configure Environment
 
-### Prerequisites
+Copy the example environment file:
 
-- **API Key**: Obtain an API key from TMDb to access their API.
-- **SignalWire Account**: Set up an account with SignalWire to use their AI Gateway.
+```bash
+cp env.example .env
+```
 
-### Installation
+Edit `.env` with your credentials:
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/briankwest/moviebot.git
-   cd moviebot
-   ```
+```bash
+TMDB_API_KEY=your_tmdb_api_key_here
+HTTP_USERNAME=your_basic_auth_username
+HTTP_PASSWORD=your_basic_auth_password
+PORT=5000
+```
 
-2. **Install Dependencies**:
-   Ensure you have Python and pip installed, then run:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### 3. Run the Agent
 
-3. **Configure API Keys**:
-   Replace `YOUR_API_KEY` in the code with your actual TMDb API key.
-
-### Deploying on Dokku
-
-1. **Create a Dokku App**:
-   Ensure you have Dokku installed and set up on your server. Create a new Dokku app:
-   ```bash
-   dokku apps:create moviebot
-   ```
-
-2. **Set Environment Variables**:
-   Set the necessary environment variables, including your TMDb API key:
-   ```bash
-   dokku config:set moviebot TMDB_API_KEY=your_tmdb_api_key
-   ```
-
-3. **Deploy the App**:
-   Add your Dokku server as a Git remote and push the code:
-   ```bash
-   git remote add dokku dokku@your_dokku_server:moviebot
-   git push dokku main
-   ```
-
-4. **Run Migrations (if any)**:
-   If your application requires database migrations, run them using:
-   ```bash
-   dokku run moviebot python manage.py migrate
-   ```
-
-5. **Set Up Let's Encrypt**:
-   To secure your app with SSL, use Dokku's Let's Encrypt plugin. First, ensure the plugin is installed:
-   ```bash
-   sudo dokku plugin:install https://github.com/dokku/dokku-letsencrypt.git
-   ```
-
-   Then, enable Let's Encrypt for your app:
-   ```bash
-   dokku letsencrypt:enable moviebot
-   ```
-
-   To automatically renew the certificates, set up a cron job:
-   ```bash
-   dokku letsencrypt:cron-job --add
-   ```
-
-6. **Access the App**:
-   Your app should now be running on your Dokku server with SSL enabled. Access it via the URL provided by Dokku.
-
-### Usage
-
-Run the AI agent using the command:
 ```bash
 python app.py
 ```
 
-Interact with the AI agent through the configured communication channels to get movie information and recommendations.
+You should see:
 
-## Development
+```
+Starting MovieBot Agent
+----------------------------------------
+URL: http://0.0.0.0:5000/swaig
+----------------------------------------
+Press Ctrl+C to stop the agent
+```
 
-### Adding New Features
+## Testing
 
-To add new features or functions, follow these steps:
+### List Available Tools
 
-1. **Define New SWAIG Functions**: Map new functionalities to TMDb API endpoints.
-2. **Update AI Agent**: Integrate the new functions into the AI agent's capabilities.
-3. **Test**: Ensure the new features work as expected and handle errors gracefully.
+```bash
+swaig-test app.py --list-tools
+```
 
-### Contributing
+### Test a Function
 
-Contributions are welcome! Please fork the repository and submit a pull request with your changes.
+```bash
+swaig-test app.py --exec search_movie --query "The Matrix"
+swaig-test app.py --exec get_trending_movies --time_window "week"
+swaig-test app.py --exec get_genre_list
+```
 
-## License
+### View Generated SWML
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+```bash
+swaig-test app.py --dump-swml
+```
 
-## Acknowledgments
+## Configuration Options
 
-- **SignalWire**: For providing the AI Gateway and enabling seamless integration of AI functionalities into the SignalWire AI Agent.
-- **OpenAI**: For the GPT models that power the natural language understanding and generation capabilities of the AI agent.
-- **TMDb**: For the comprehensive movie database that provides up-to-date movie information.
+### Agent Configuration
 
-## Contact
+The agent is configured in `app.py` via the `MovieBot` class constructor:
 
-For questions or support, please contact [brian@signalwire.com](mailto:brian@signalwire.com).
+```python
+super().__init__(
+    name="moviebot",
+    route="/swaig",
+    host="0.0.0.0",
+    port=int(os.getenv("PORT", 5000)),
+    basic_auth=(os.getenv("HTTP_USERNAME"), os.getenv("HTTP_PASSWORD"))
+)
+```
+
+### Voice Configuration
+
+The agent uses ElevenLabs for text-to-speech:
+
+```python
+self.add_language(
+    name="English",
+    code="en-US",
+    voice="elevenlabs.josh",
+    function_fillers=[
+        "Let me search for that movie information...",
+        "One moment while I look that up...",
+        "Searching the movie database..."
+    ]
+)
+```
+
+To change the voice, modify the `voice` parameter. Available options include:
+- `elevenlabs.josh`, `elevenlabs.rachel`
+- `openai.alloy`, `openai.nova`
+- `gcloud.en-US-Neural2-A`
+
+### AI Parameters
+
+Adjust speech detection and timeout settings:
+
+```python
+self.set_params({
+    "end_of_speech_timeout": 1000,    # ms of silence to end turn
+    "attention_timeout": 10000         # ms before "are you there?"
+})
+```
+
+## Connecting to SignalWire
+
+### 1. Create an External SWML Handler
+
+In the SignalWire dashboard:
+1. Go to **Voice** > **SWML Scripts**
+2. Create a new **External SWML Handler**
+3. Set the URL to your agent endpoint (e.g., `https://your-domain.com/swaig`)
+4. Add basic auth credentials if configured
+
+### 2. Create a Subscriber
+
+1. Go to **Subscribers**
+2. Create a new subscriber
+3. Assign the SWML handler
+4. Note the subscriber address (e.g., `/public/moviebot`)
+
+### 3. Connect a Phone Number
+
+1. Go to **Phone Numbers**
+2. Assign a number to the subscriber
+3. Calls to this number will now reach your agent
+
+### 4. WebRTC (Browser-Based)
+
+For browser-based voice interaction:
+1. Create a Guest Token with the subscriber address
+2. Use the SignalWire WebRTC SDK to connect
+
+## Troubleshooting
+
+### Agent Not Starting
+
+- Verify `TMDB_API_KEY` is set in your environment
+- Check that port 5000 (or your configured port) is available
+- Ensure all dependencies are installed
+
+### TMDb API Errors
+
+- Verify your API key is valid at [TMDb](https://www.themoviedb.org/settings/api)
+- Check API rate limits (TMDb allows ~40 requests/10 seconds)
+
+### No Voice Output
+
+- Ensure a language is configured with `add_language()`
+- Verify the voice name is correct for your TTS provider
+
+### Function Not Being Called
+
+- Check the function description is clear enough for the AI
+- Verify parameters match the expected types
+- Test the function directly with `swaig-test`
+
+## File Overview
+
+| File | Purpose |
+|------|---------|
+| `app.py` | Main agent class with SWAIG tools |
+| `tmdb_api.py` | TMDb API wrapper functions |
+| `requirements.txt` | Python dependencies |
+| `env.example` | Environment variable template |
+| `Procfile` | Heroku/Dokku deployment config |
+| `runtime.txt` | Python version specification |
