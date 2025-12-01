@@ -40,7 +40,7 @@ class MovieBot(AgentBase):
             route="/swaig",
             host="0.0.0.0",
             port=int(os.getenv("PORT", 5000)),
-            basic_auth=(os.getenv("HTTP_USERNAME"), os.getenv("HTTP_PASSWORD"))
+            basic_auth=(os.getenv("SWML_BASIC_AUTH_USER"), os.getenv("SWML_BASIC_AUTH_PASSWORD"))
         )
 
         # Store API key for use in tools

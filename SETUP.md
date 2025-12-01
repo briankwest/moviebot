@@ -34,8 +34,8 @@ Edit `.env` with your credentials:
 
 ```bash
 TMDB_API_KEY=your_tmdb_api_key_here
-HTTP_USERNAME=your_basic_auth_username
-HTTP_PASSWORD=your_basic_auth_password
+SWML_BASIC_AUTH_USER=your_basic_auth_username
+SWML_BASIC_AUTH_PASSWORD=your_basic_auth_password
 PORT=5000
 ```
 
@@ -89,7 +89,7 @@ super().__init__(
     route="/swaig",
     host="0.0.0.0",
     port=int(os.getenv("PORT", 5000)),
-    basic_auth=(os.getenv("HTTP_USERNAME"), os.getenv("HTTP_PASSWORD"))
+    basic_auth=(os.getenv("SWML_BASIC_AUTH_USER"), os.getenv("SWML_BASIC_AUTH_PASSWORD"))
 )
 ```
 

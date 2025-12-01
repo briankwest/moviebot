@@ -25,7 +25,7 @@ swaig-test app.py --dump-swml
 
 Copy `env.example` to `.env` and configure:
 - `TMDB_API_KEY`: TMDb API key (required)
-- `HTTP_USERNAME` / `HTTP_PASSWORD`: Basic auth for SWAIG endpoints
+- `SWML_BASIC_AUTH_USER` / `SWML_BASIC_AUTH_PASSWORD`: Basic auth for SWAIG endpoints
 - `PORT`: Server port (default 5000)
 
 ## Architecture

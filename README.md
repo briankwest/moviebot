@@ -61,8 +61,8 @@ moviebot/
 
    Edit `.env` and set:
    - `TMDB_API_KEY`: Your TMDb API key
-   - `HTTP_USERNAME`: Basic auth username for SWAIG endpoints
-   - `HTTP_PASSWORD`: Basic auth password for SWAIG endpoints
+   - `SWML_BASIC_AUTH_USER`: Basic auth username for SWAIG endpoints
+   - `SWML_BASIC_AUTH_PASSWORD`: Basic auth password for SWAIG endpoints
    - `PORT`: Server port (default: 5000)
 
 ### Running the Agent
@@ -119,8 +119,8 @@ The agent provides 12 tools for movie information:
 2. **Set environment variables**:
    ```bash
    dokku config:set moviebot TMDB_API_KEY=your_api_key
-   dokku config:set moviebot HTTP_USERNAME=your_username
-   dokku config:set moviebot HTTP_PASSWORD=your_password
+   dokku config:set moviebot SWML_BASIC_AUTH_USER=your_username
+   dokku config:set moviebot SWML_BASIC_AUTH_PASSWORD=your_password
    ```
 
 3. **Deploy**:
@@ -140,8 +140,8 @@ The agent provides 12 tools for movie information:
 docker build -t moviebot .
 docker run -p 5000:5000 \
   -e TMDB_API_KEY=your_api_key \
-  -e HTTP_USERNAME=your_username \
-  -e HTTP_PASSWORD=your_password \
+  -e SWML_BASIC_AUTH_USER=your_username \
+  -e SWML_BASIC_AUTH_PASSWORD=your_password \
   moviebot
 ```
 

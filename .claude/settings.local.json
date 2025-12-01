@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__filesystem__list_directory",
+      "Skill(signalwire-agents-sdk)",
+      "Bash(export TMDB_API_KEY=cc576ac80d374ad78ed64902ce12ce6e)",
+      "Bash(swaig-test app.py:*)",
+      "Bash(git rm:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nRewrite MovieBot using SignalWire Agents SDK\n\n- Rewrite app.py using AgentBase class with 12 SWAIG tools\n- Add dedicated tmdb_api.py module for TMDb API calls\n- Update requirements.txt to use signalwire-agents package\n- Add CLAUDE.md for Claude Code project context\n- Update README.md and SETUP.md with current architecture\n- Remove prompt.md (prompt now defined via POM in code)\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
